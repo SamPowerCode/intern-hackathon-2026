@@ -321,7 +321,182 @@
             font-size: 0.9rem;
             margin-top: 1rem;
         }
+
+        /* ── Tool widgets ── */
+        .tool-container {
+            width: 100%;
+            max-width: 760px;
+            margin-bottom: 1rem;
+        }
+
+        /* Terminal (Stage 3) */
+        .terminal-outer {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .terminal-titlebar {
+            background: var(--surface2);
+            padding: 0.5rem 1rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .terminal-body { padding: 0.5rem; }
+        .xterm { padding: 4px; }
+
+        /* Canvas inspector (Stage 4) */
+        .canvas-outer {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+        }
+        .canvas-outer h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+        .canvas-img-wrap { margin-bottom: 1rem; }
+        .canvas-img-wrap canvas { border: 1px solid var(--border); border-radius: 6px; max-width: 100%; }
+        .canvas-controls { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+        .canvas-controls label { font-size: 0.85rem; color: var(--muted); }
+        .canvas-controls input[type="number"] {
+            width: 80px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.4rem 0.6rem;
+            color: var(--text);
+            font-family: monospace;
+        }
+        .canvas-output {
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-light);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.6rem 0.9rem;
+            min-height: 2rem;
+        }
+
+        /* SQL editor (Stage 5) */
+        .sql-outer {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+        }
+        .sql-outer h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+        .sql-status { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.75rem; }
+        .sql-input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            color: var(--text);
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            margin-bottom: 0.75rem;
+        }
+        .sql-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.2); }
+        .sql-results { margin-top: 0.75rem; overflow-x: auto; }
+        .sql-table { border-collapse: collapse; font-size: 0.85rem; font-family: monospace; width: 100%; }
+        .sql-table th { background: var(--surface2); color: var(--accent-light); padding: 0.4rem 0.75rem; text-align: left; border: 1px solid var(--border); }
+        .sql-table td { padding: 0.35rem 0.75rem; border: 1px solid var(--border); color: var(--text); }
+        .sql-table tr:nth-child(even) td { background: var(--surface2); }
+        .sql-error { color: var(--error); font-size: 0.85rem; font-family: monospace; }
+        .sql-ok { color: var(--success); font-size: 0.85rem; }
+
+        /* Python editor (Stage 6) */
+        .python-outer {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .python-titlebar {
+            background: var(--surface2);
+            padding: 0.5rem 1rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .python-code {
+            width: 100%;
+            background: var(--bg);
+            border: none;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            color: #e6edf3;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+            outline: none;
+            min-height: 280px;
+        }
+        .python-run-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--surface2);
+            flex-wrap: wrap;
+        }
+        .python-run-row label { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+        .python-passphrase {
+            flex: 1;
+            min-width: 200px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.45rem 0.75rem;
+            color: var(--text);
+            font-family: monospace;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .python-passphrase:focus { border-color: var(--accent); }
+        .python-status { font-size: 0.8rem; color: var(--muted); padding: 0.4rem 1rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .python-output {
+            background: #0d1117;
+            color: #a3e635;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            padding: 1rem;
+            margin: 0;
+            min-height: 60px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .load-py-btn {
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            border-radius: 6px;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .load-py-btn:hover { background: #444c56; }
+        .load-py-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
+    <!-- xterm.js — terminal emulator for Stage 3 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+    <!-- sql.js — SQLite in WebAssembly for Stage 5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.11.0/sql-wasm.min.js"></script>
+    <!-- Pyodide — Python in WebAssembly for Stage 6 (loaded lazily) -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js" defer></script>
 </head>
 <body>
 
@@ -570,13 +745,17 @@ if __name__ == "__main__":
                 <div class="card-title">${esc(payload.title)}</div>
                 <div class="problem">${payload.problem}</div>
             </div>
+            ${payload.toolType ? `<div id="tool-${stageNum}" class="tool-container"></div>` : ''}
             <div id="answer-section-${stageNum}"></div>
         `;
         document.getElementById('stages-container').appendChild(wrapper);
 
         renderAnswerForm(stageNum);
 
-        // Two rAF ticks so the element is in the DOM before the transition fires
+        if (payload.toolType) {
+            initStageTool(stageNum, payload);
+        }
+
         requestAnimationFrame(() => requestAnimationFrame(() => {
             wrapper.classList.add('visible');
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -586,6 +765,17 @@ if __name__ == "__main__":
         document.getElementById('stage-indicator').textContent = `Stage ${stageNum} of ${TOTAL_STAGES}`;
 
         setTimeout(() => document.getElementById(`s${stageNum}a1`)?.focus(), 600);
+    }
+
+    function initStageTool(stageNum, payload) {
+        const container = document.getElementById(`tool-${stageNum}`);
+        if (!container) return;
+        switch (payload.toolType) {
+            case 'terminal': initTerminalTool(stageNum, container, payload.toolData); break;
+            case 'canvas':   initCanvasTool(stageNum, container, payload.toolData);   break;
+            case 'sql':      initSQLTool(stageNum, container, payload.toolData);      break;
+            case 'python':   initPythonTool(stageNum, container, payload.toolData);   break;
+        }
     }
 
     function markStageSolved(stageNum) {
