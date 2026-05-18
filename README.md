@@ -22,19 +22,15 @@ Each stage unlocks the next only when all three answers are correct. Stages 2–
 
 ### Session 2 (stages 3–6)
 
-1. Distribute `vault9-files.zip` to each team at the start of the session (USB stick, shared drive, or download link).
-2. Teams unzip it — they'll need the files for stages 3–6.
-3. Stage 4 requires Pillow: `pip install Pillow`
+No files to distribute. All stage data (log file, surveillance image, database, Python script) is embedded in the webapp itself — unlocked only when the previous stage is solved.
 
-Contents of `vault9-files.zip`:
+Teams just continue on the same `hackathon.html` they opened in session 1.
 
-| File | Used in |
-|------|---------|
-| `vault_logs.txt` | Stage 3 — bash/grep investigation |
-| `mittens_cam.png` | Stage 4 — image steganography |
-| `extract_template.py` | Stage 4 — partial extraction script |
-| `vault_records.db` | Stage 5 — SQLite queries |
-| `final_lock.py` | Stage 6 — obfuscated Python + bug fix |
+> **Note:** `vault9-files.zip` still exists as an organiser backup but participants do not need it. The in-browser tools replace all downloads:
+> - Stage 3: terminal emulator with `vault_logs.txt` pre-loaded
+> - Stage 4: canvas pixel inspector with the surveillance image pre-loaded
+> - Stage 5: SQL editor connected to `vault_records.db`
+> - Stage 6: Python editor with `final_lock.py` pre-loaded (Pyodide)
 
 ---
 
