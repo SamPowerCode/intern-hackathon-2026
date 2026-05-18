@@ -1,0 +1,24 @@
+<p>
+    VAULT-9 logs every event. Mittens' intrusion is buried in thousands of lines of system
+    logs. The file <code>vault_logs.txt</code> is in your session 2 ZIP.
+</p>
+<p>Use command-line tools to answer the three questions below.</p>
+<ol>
+    <li>
+        How many <code>CRITICAL</code> log lines contain <code>FELINE_INPUT</code>?<br>
+        <small>Hint: <code>grep -c</code></small>
+    </li>
+    <li>
+        What is the <strong>numeric part</strong> of the session ID in the lockdown event?<br>
+        <small>e.g. if the log shows <code>session=SID-1234</code>, the answer is <code>1234</code></small><br>
+        <small>Hint: <code>grep</code> + <code>cut -d'-' -f2</code></small>
+    </li>
+    <li>
+        Which vault was locked <strong>last</strong>? (e.g. <code>V001</code>)<br>
+        <small>Hint: <code>grep "LOCKDOWN INITIATED"</code> + <code>tail -1</code></small>
+    </li>
+</ol>
+<div class="hint-box">
+    All answers come directly from the log file — no calculations needed.
+    Vault IDs are case-insensitive in the answer checker.
+</div>
