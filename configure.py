@@ -20,6 +20,13 @@ ROOT = Path(__file__).parent
 PYTHON = sys.executable  # use same interpreter to find installed packages
 
 
+def read_b64(rel: str) -> str:
+    return base64.b64encode((ROOT / rel).read_bytes()).decode()
+
+def read_text(rel: str) -> str:
+    return (ROOT / rel).read_text()
+
+
 # ── Crypto helpers ────────────────────────────────────────────────────────
 
 def sha256_hex(s: str) -> str:
@@ -127,7 +134,9 @@ s3_payload = {
     "title": "Stage 3 — The Server Room",
     "problem": s3_html,
     "answerHashes": [hash_answer(a) for a in s3_answers],
-    "labels": ["Number of CRITICAL events", "Session number", "Last vault locked"]
+    "labels": ["Number of CRITICAL events", "Session number", "Last vault locked"],
+    "toolType": "terminal",
+    "toolData": {"logContent": read_text("stages/stage3/vault_logs.txt")},
 }
 s3_blob = encrypt_payload(s3_payload, derive_key(2, s2_answers))
 
@@ -135,7 +144,9 @@ s4_payload = {
     "title": "Stage 4 — The Surveillance Room",
     "problem": s4_html,
     "answerHashes": [hash_answer(a) for a in s4_answers],
-    "labels": ["Override code 1", "Override code 2", "Override code 3"]
+    "labels": ["Override code 1", "Override code 2", "Override code 3"],
+    "toolType": "canvas",
+    "toolData": {"imageBase64": read_b64("stages/stage4/mittens_cam.png")},
 }
 s4_blob = encrypt_payload(s4_payload, derive_key(3, s3_answers))
 
@@ -143,7 +154,9 @@ s5_payload = {
     "title": "Stage 5 — The Records Room",
     "problem": s5_html,
     "answerHashes": [hash_answer(a) for a in s5_answers],
-    "labels": ["V006 emergency code", "Sum of reversed transactions", "Mittens vault code"]
+    "labels": ["V006 emergency code", "Sum of reversed transactions", "Mittens vault code"],
+    "toolType": "sql",
+    "toolData": {"dbBase64": read_b64("stages/stage5/vault_records.db")},
 }
 s5_blob = encrypt_payload(s5_payload, derive_key(4, s4_answers))
 
@@ -151,7 +164,9 @@ s6_payload = {
     "title": "Stage 6 — The Vault",
     "problem": s6_html,
     "answerHashes": [hash_answer(a) for a in s6_answers],
-    "labels": ["Final code 1", "Final code 2", "Final code 3"]
+    "labels": ["Final code 1", "Final code 2", "Final code 3"],
+    "toolType": "python",
+    "toolData": {"script": read_text("stages/stage6/final_lock.py")},
 }
 s6_blob = encrypt_payload(s6_payload, derive_key(5, s5_answers))
 
