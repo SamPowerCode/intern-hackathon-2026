@@ -1,0 +1,20 @@
+<p>
+    The security camera caught Mittens in the act. The paranoid lead engineer always
+    embedded backup override codes into surveillance images — a technique only he
+    documented. His notes were recovered from the recycle bin:
+</p>
+<blockquote style="border-left:3px solid var(--accent);padding:0.5rem 1rem;margin:1rem 0;color:#cdd9e5;font-style:italic;">
+    "Override codes hidden in R channel, every 1st pixel (i.e. every pixel),
+    starting at pixel 0. LSB steganography. Standard."
+</blockquote>
+<p>
+    The file <code>mittens_cam.png</code> is in your session 2 ZIP.
+    A partial extraction script is also included as <code>extract_template.py</code>.
+    Fill in <code>STEP</code>, run it, and read off the three override codes.
+</p>
+<pre><code>pip install Pillow
+python3 extract_template.py</code></pre>
+<div class="hint-box">
+    The three answers are the three comma-separated integers printed by the script.
+    Make sure <code>mittens_cam.png</code> is in the same directory as the script.
+</div>
