@@ -4,12 +4,10 @@
     But SQLite doesn't truly forget.
 </p>
 <p>
-    The file <code>vault_records.db</code> is in your session 2 ZIP.
-    Open it with the <code>sqlite3</code> command-line tool or Python's
-    <code>sqlite3</code> module and answer the three questions below.
+    The SQL editor below is connected to <code>vault_records.db</code>.
+    Tables: <code>vaults</code>, <code>transactions</code>, <code>access_log</code>.
+    Use <kbd>Ctrl+Enter</kbd> or the Run button to execute a query.
 </p>
-<pre><code>sqlite3 vault_records.db</code></pre>
-<p>The database has three tables: <code>vaults</code>, <code>transactions</code>, <code>access_log</code>.</p>
 <ol>
     <li>
         What is the <code>emergency_code</code> of vault <code>V006</code>
@@ -21,11 +19,10 @@
     </li>
     <li>
         There is an entry in <code>access_log</code> where <code>username = 'MITTENS'</code>.
-        Join it to the <code>vaults</code> table and find that vault's
-        <code>emergency_code</code>.
+        Join it to the <code>vaults</code> table and find that vault's <code>emergency_code</code>.
     </li>
 </ol>
 <div class="hint-box">
-    Tip: <code>.schema</code> in the sqlite3 shell shows the table structure.
-    All three answers are short strings or integers — no calculation beyond SQL aggregation needed.
+    Tip: run <code>SELECT name FROM sqlite_master WHERE type='table';</code> to list tables,
+    or <code>PRAGMA table_info(vaults);</code> to see columns.
 </div>
