@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon 2025</title>
+    <style>
+        :root {
+            --bg:           #0d1117;
+            --surface:      #161b22;
+            --surface2:     #1c2128;
+            --border:       #30363d;
+            --accent:       #7c3aed;
+            --accent-dim:   #6d28d9;
+            --accent-light: #a78bfa;
+            --success:      #10b981;
+            --success-bg:   #052e16;
+            --error:        #f87171;
+            --text:         #e6edf3;
+            --muted:        #7d8590;
+            --code-bg:      #0d1117;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem 6rem;
+        }
+
+        header {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo { font-size: 1rem; font-weight: 700; color: var(--accent-light); }
+
+        .stage-pill {
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.25rem 0.8rem;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .progress {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 2.5rem;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            transition: background 0.4s;
+        }
+
+        .progress-segment.current  { background: var(--accent); }
+        .progress-segment.complete { background: var(--success); }
+
+        /* ── Cards ── */
+        .card {
+            width: 100%;
+            max-width: 760px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem 2.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .problem p  { margin-bottom: 0.85rem; color: #cdd9e5; }
+        .problem ul,
+        .problem ol { margin: 0.5rem 0 0.85rem 1.5rem; color: #cdd9e5; }
+        .problem li { margin-bottom: 0.35rem; }
+
+        .problem code {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            color: var(--accent-light);
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 0.88em;
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+        }
+
+        .problem pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .problem pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.9rem;
+            color: #e6edf3;
+            line-height: 1.7;
+        }
+
+        .hint-box {
+            background: var(--surface2);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* ── Answer card ── */
+        .answer-card {
+            width: 100%;
+            max-width: 760px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem 2.25rem;
+        }
+
+        .answer-card h2 {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .fields { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+
+        .field label {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+        }
+
+        .form-footer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            flex-shrink: 0;
+        }
+
+        .submit-btn:hover:not(:disabled) { background: var(--accent-dim); }
+        .submit-btn:active:not(:disabled) { transform: scale(0.97); }
+        .submit-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+        .feedback { font-size: 0.9rem; font-weight: 500; min-height: 1.2em; }
+        .feedback.error   { color: var(--error); }
+        .feedback.success { color: var(--success); }
+
+        .attempt-count { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
+
+        /* ── Solved notice ── */
+        .solved-notice {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.9rem 1.25rem;
+            background: var(--success-bg);
+            border: 1px solid var(--success);
+            border-radius: 10px;
+            color: #6ee7b7;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .solved-notice .check {
+            font-size: 1.1rem;
+            color: var(--success);
+        }
+
+        /* ── Stage divider ── */
+        .stage-divider {
+            width: 100%;
+            max-width: 760px;
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .stage-divider::before {
+            content: '▼';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg);
+            padding: 0 0.75rem;
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        /* ── Stage entry animation ── */
+        .stage-wrapper {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .stage-wrapper.visible { opacity: 1; transform: none; }
+
+        /* First stage is always visible */
+        #stage-1 { opacity: 1; transform: none; }
+
+        /* ── Final success ── */
+        .final-success {
+            width: 100%;
+            max-width: 760px;
+            background: var(--success-bg);
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 2.5rem 2.25rem;
+            text-align: center;
+            margin-top: 2rem;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .final-success h2 { color: var(--success); font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .final-success p  { color: #6ee7b7; margin-bottom: 0.5rem; }
+
+        .completion-stamp {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.25rem;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            color: var(--success);
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* ── Decrypt error ── */
+        .decrypt-error {
+            width: 100%;
+            max-width: 760px;
+            background: #2d0000;
+            border: 1px solid var(--error);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚡ Intern Hackathon 2025</div>
+        <div class="stage-pill" id="stage-indicator">Stage 1 of 6</div>
+    </header>
+
+    <div class="progress" id="progress-bar">
+        <div class="progress-segment current" id="seg-1"></div>
+        <div class="progress-segment"         id="seg-2"></div>
+        <div class="progress-segment"         id="seg-3"></div>
+        <div class="progress-segment"         id="seg-4"></div>
+        <div class="progress-segment"         id="seg-5"></div>
+        <div class="progress-segment"         id="seg-6"></div>
+    </div>
+
+    <div id="stages-container" style="width:100%;max-width:760px;display:flex;flex-direction:column;align-items:center;gap:0;">
+
+        <!-- ============================================================
+             STAGE 1 — always visible, content written directly in HTML
+             ============================================================ -->
+        <div class="stage-wrapper" id="stage-1">
+
+            <div class="card">
+                <div class="card-title">Stage 1 — The Warmup</div>
+                <!-- EDIT: problem content for stage 1 -->
+                <div class="problem">
+                    <p>
+                        Welcome to the hackathon! This first stage is a warmup to get
+                        you comfortable with the format. Read carefully — you need all
+                        three answers correct to advance.
+                    </p>
+                    <p>Consider the following Python function:</p>
+                    <pre><code>def mystery(n):
+    if n &lt;= 1:
+        return n
+    return mystery(n - 1) + mystery(n - 2)</code></pre>
+                    <p>Answer all three questions:</p>
+                    <ol>
+                        <li>What does <code>mystery(7)</code> return?</li>
+                        <li>What is the name of the algorithmic technique this uses?</li>
+                        <li>What is the Big-O time complexity? Use the form <code>O(x^n)</code>.</li>
+                    </ol>
+                    <div class="hint-box">
+                        Answers are case-insensitive and whitespace is ignored.
+                        You won't be told <em>which</em> answers are wrong — only how many.
+                    </div>
+                </div>
+            </div>
+
+            <div id="answer-section-1"></div>
+
+        </div>
+        <!-- end stage-1 -->
+
+    </div><!-- end stages-container -->
+
+
+    <script>
+    // ====================================================================
+    //  CONFIGURATION — edit these sections to set up your hackathon
+    // ====================================================================
+
+    const TOTAL_STAGES = 6;
+
+    // Stage 1: answer hashes and labels are in plaintext (stage 1 is always visible).
+    // Use setup.html → "Hash generator" to get the SHA-256 of each correct answer.
+    const STAGE_1_CONFIG = {
+        answerHashes: [
+            'PASTE_HASH_FOR_ANSWER_1_HERE',
+            'PASTE_HASH_FOR_ANSWER_2_HERE',
+            'PASTE_HASH_FOR_ANSWER_3_HERE'
+        ],
+        labels: [
+            'Answer 1 — mystery(7)',
+            'Answer 2 — algorithmic technique',
+            'Answer 3 — time complexity'
+        ]
+    };
+
+    // Stages 2–6: AES-GCM encrypted blobs generated by setup.html.
+    // Each blob is decrypted using the correct answers to the PREVIOUS stage.
+    // Paste the output from setup.html here.
+    const ENCRYPTED_STAGES = {
+        2: 'PASTE_ENCRYPTED_BLOB_FOR_STAGE_2_HERE',
+        3: 'PASTE_ENCRYPTED_BLOB_FOR_STAGE_3_HERE',
+        4: 'PASTE_ENCRYPTED_BLOB_FOR_STAGE_4_HERE',
+        5: 'PASTE_ENCRYPTED_BLOB_FOR_STAGE_5_HERE',
+        6: 'PASTE_ENCRYPTED_BLOB_FOR_STAGE_6_HERE',
+    };
+
+    // ====================================================================
+    //  RUNTIME STATE
+    // ====================================================================
+
+    // Populated as stages are unlocked
+    const stageConfig = { 1: STAGE_1_CONFIG };
+    const attemptCounts = {};
+    const startTime = Date.now();
+
+    // ====================================================================
+    //  CRYPTO
+    // ====================================================================
+
+    async function sha256(str) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // Derive AES-GCM key from a stage's correct answers.
+    // stageNum is the stage whose answers are being used as the key source.
+    async function answersToKey(stageNum, answers) {
+        const combined = `hackathon:stage${stageNum}:` + answers.join('|');
+        const hex = await sha256(combined);
+        const bytes = new Uint8Array(32);
+        for (let i = 0; i < 32; i++) bytes[i] = parseInt(hex.slice(i*2, i*2+2), 16);
+        return crypto.subtle.importKey('raw', bytes, {name:'AES-GCM'}, false, ['decrypt']);
+    }
+
+    async function decryptBlob(blob, key) {
+        const { iv: ivB64, ct: ctB64 } = JSON.parse(blob);
+        const iv = Uint8Array.from(atob(ivB64), c => c.charCodeAt(0));
+        const ct = Uint8Array.from(atob(ctB64), c => c.charCodeAt(0));
+        const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ct);
+        return JSON.parse(new TextDecoder().decode(plain));
+    }
+
+    // ====================================================================
+    //  ANSWER FORM
+    // ====================================================================
+
+    function renderAnswerForm(stageNum) {
+        const cfg = stageConfig[stageNum];
+        const section = document.getElementById(`answer-section-${stageNum}`);
+        section.innerHTML = `
+            <div class="answer-card">
+                <h2>Submit your answers</h2>
+                <div class="fields">
+                    ${cfg.labels.map((label, i) => `
+                        <div class="field">
+                            <label for="s${stageNum}a${i+1}">${esc(label)}</label>
+                            <input type="text"
+                                   id="s${stageNum}a${i+1}"
+                                   placeholder="Your answer…"
+                                   autocomplete="off"
+                                   spellcheck="false"
+                                   data-stage="${stageNum}">
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="form-footer">
+                    <button class="submit-btn" id="btn-${stageNum}"
+                            onclick="submitStage(${stageNum})">Submit Answers</button>
+                    <span class="feedback" id="feedback-${stageNum}"></span>
+                    <span class="attempt-count" id="att-${stageNum}"></span>
+                </div>
+            </div>
+        `;
+    }
+
+    // ====================================================================
+    //  SUBMISSION
+    // ====================================================================
+
+    async function submitStage(stageNum) {
+        const cfg = stageConfig[stageNum];
+        const btn = document.getElementById(`btn-${stageNum}`);
+
+        const raw = cfg.labels.map((_, i) =>
+            (document.getElementById(`s${stageNum}a${i+1}`)?.value || '').trim().toLowerCase()
+        );
+
+        if (raw.some(v => v === '')) {
+            setFeedback(stageNum, 'Please fill in all three answers.', 'error');
+            return;
+        }
+
+        btn.disabled    = true;
+        btn.textContent = 'Checking…';
+
+        const hashes  = await Promise.all(raw.map(sha256));
+        const correct = hashes.filter((h, i) => h === cfg.answerHashes[i]).length;
+
+        attemptCounts[stageNum] = (attemptCounts[stageNum] || 0) + 1;
+        document.getElementById(`att-${stageNum}`).textContent = `Attempt ${attemptCounts[stageNum]}`;
+
+        if (correct < 3) {
+            const word = correct === 1 ? 'answer' : 'answers';
+            setFeedback(stageNum, `${correct} out of 3 ${word} correct — keep trying.`, 'error');
+            btn.disabled    = false;
+            btn.textContent = 'Submit Answers';
+            return;
+        }
+
+        // ✓ All correct
+        markStageSolved(stageNum);
+
+        if (stageNum >= TOTAL_STAGES) {
+            showFinalSuccess();
+            return;
+        }
+
+        try {
+            const key     = await answersToKey(stageNum, raw);
+            const payload = await decryptBlob(ENCRYPTED_STAGES[stageNum + 1], key);
+            stageConfig[stageNum + 1] = { answerHashes: payload.answerHashes, labels: payload.labels };
+            renderNextStage(stageNum + 1, payload);
+        } catch {
+            document.getElementById('stages-container').insertAdjacentHTML('beforeend', `
+                <div class="decrypt-error">
+                    Could not unlock the next stage — the encrypted blob may not have been configured yet.
+                    (If you are the organiser, paste the output from setup.html into ENCRYPTED_STAGES.)
+                </div>
+            `);
+        }
+    }
+
+    // ====================================================================
+    //  STAGE RENDERING
+    // ====================================================================
+
+    function renderNextStage(stageNum, payload) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'stage-wrapper';
+        wrapper.id = `stage-${stageNum}`;
+        wrapper.innerHTML = `
+            <div class="stage-divider"></div>
+            <div class="card">
+                <div class="card-title">${esc(payload.title)}</div>
+                <div class="problem">${payload.problem}</div>
+            </div>
+            <div id="answer-section-${stageNum}"></div>
+        `;
+        document.getElementById('stages-container').appendChild(wrapper);
+
+        renderAnswerForm(stageNum);
+
+        // Two rAF ticks so the element is in the DOM before the transition fires
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            wrapper.classList.add('visible');
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }));
+
+        updateProgress(stageNum);
+        document.getElementById('stage-indicator').textContent = `Stage ${stageNum} of ${TOTAL_STAGES}`;
+
+        setTimeout(() => document.getElementById(`s${stageNum}a1`)?.focus(), 600);
+    }
+
+    function markStageSolved(stageNum) {
+        const section = document.getElementById(`answer-section-${stageNum}`);
+        section.innerHTML = `
+            <div class="solved-notice">
+                <span class="check">✓</span>
+                Stage ${stageNum} complete
+            </div>
+        `;
+        document.getElementById(`seg-${stageNum}`).className = 'progress-segment complete';
+    }
+
+    function showFinalSuccess() {
+        const elapsed  = Math.round((Date.now() - startTime) / 1000);
+        const mins     = Math.floor(elapsed / 60);
+        const secs     = elapsed % 60;
+        const timeStr  = `${mins}m ${secs}s`;
+
+        const div = document.createElement('div');
+        div.className = 'final-success';
+        div.innerHTML = `
+            <h2>All ${TOTAL_STAGES} stages complete!</h2>
+            <p>Congratulations — show this screen to a judge.</p>
+            <div class="completion-stamp">Completed in ${timeStr}</div>
+        `;
+        document.getElementById('stages-container').appendChild(div);
+        div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ====================================================================
+    //  PROGRESS BAR
+    // ====================================================================
+
+    function updateProgress(activeStage) {
+        for (let i = 1; i <= TOTAL_STAGES; i++) {
+            const seg = document.getElementById(`seg-${i}`);
+            if (!seg) continue;
+            if (i < activeStage)       seg.className = 'progress-segment complete';
+            else if (i === activeStage) seg.className = 'progress-segment current';
+            else                        seg.className = 'progress-segment';
+        }
+    }
+
+    // ====================================================================
+    //  UTILITIES
+    // ====================================================================
+
+    function setFeedback(stageNum, msg, type) {
+        const el = document.getElementById(`feedback-${stageNum}`);
+        el.textContent = msg;
+        el.className   = `feedback ${type}`;
+    }
+
+    function esc(str) {
+        return String(str)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ====================================================================
+    //  INIT
+    // ====================================================================
+
+    renderAnswerForm(1);
+
+    // Enter key submits whichever stage the focused input belongs to
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Enter') return;
+        const stage = e.target?.dataset?.stage;
+        if (stage) submitStage(parseInt(stage, 10));
+    });
+    </script>
+
+</body>
+</html>

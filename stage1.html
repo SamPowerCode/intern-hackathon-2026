@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon — Stage 1</title>
+    <style>
+        :root {
+            --bg:           #0d1117;
+            --surface:      #161b22;
+            --surface2:     #1c2128;
+            --border:       #30363d;
+            --accent:       #7c3aed;
+            --accent-light: #a78bfa;
+            --success:      #10b981;
+            --success-bg:   #052e16;
+            --error:        #f87171;
+            --text:         #e6edf3;
+            --muted:        #7d8590;
+            --code-bg:      #0d1117;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem 4rem;
+        }
+
+        /* ── Header ── */
+        header {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            letter-spacing: -0.01em;
+        }
+
+        .stage-pill {
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.25rem 0.8rem;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* ── Progress bar ── */
+        .progress {
+            width: 100%;
+            max-width: 760px;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 2rem;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            transition: background 0.4s;
+        }
+
+        .progress-segment.current  { background: var(--accent); }
+        .progress-segment.complete { background: var(--success); }
+
+        /* ── Card ── */
+        .card {
+            width: 100%;
+            max-width: 760px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem 2.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ── Problem body typography ── */
+        .problem p  { margin-bottom: 0.85rem; color: #cdd9e5; }
+        .problem ul,
+        .problem ol { margin: 0.5rem 0 0.85rem 1.5rem; color: #cdd9e5; }
+        .problem li { margin-bottom: 0.35rem; }
+
+        .problem code {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            color: var(--accent-light);
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+        }
+
+        .problem pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .problem pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.9rem;
+            color: #e6edf3;
+            line-height: 1.7;
+        }
+
+        .hint-box {
+            background: var(--surface2);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* ── Answer form ── */
+        .answer-card {
+            width: 100%;
+            max-width: 760px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem 2.25rem;
+        }
+
+        .answer-card h2 {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .fields { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+
+        .field label {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+        }
+
+        .form-footer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        #submit-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem 1.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            flex-shrink: 0;
+        }
+
+        #submit-btn:hover:not(:disabled) { background: #6d28d9; }
+        #submit-btn:active:not(:disabled) { transform: scale(0.97); }
+        #submit-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+        #feedback {
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-height: 1.2em;
+        }
+
+        #feedback.error   { color: var(--error); }
+        #feedback.success { color: var(--success); }
+
+        #attempt-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* ── Success banner ── */
+        #success-banner {
+            display: none;
+            width: 100%;
+            max-width: 760px;
+            background: var(--success-bg);
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 2rem 2.25rem;
+            text-align: center;
+            margin-top: 1rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+        #success-banner h2 { color: var(--success); font-size: 1.4rem; margin-bottom: 0.5rem; }
+        #success-banner p  { color: #6ee7b7; margin-bottom: 1.5rem; }
+
+        .next-btn {
+            display: inline-block;
+            background: var(--success);
+            color: #052e16;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.65rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .next-btn:hover  { background: #34d399; }
+        .next-btn:active { transform: scale(0.97); }
+
+        /* ── Organizer tools ── */
+        details.organizer {
+            width: 100%;
+            max-width: 760px;
+            margin-top: 2.5rem;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        details.organizer summary {
+            cursor: pointer;
+            font-weight: 600;
+            user-select: none;
+            list-style: none;
+        }
+
+        details.organizer summary::before { content: '▶  '; }
+        details.organizer[open] summary::before { content: '▼  '; }
+
+        .hash-tool { margin-top: 1rem; }
+        .hash-tool p { margin-bottom: 0.75rem; line-height: 1.5; }
+
+        .hash-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .hash-row input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.45rem 0.75rem;
+            color: var(--text);
+            font-family: monospace;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .hash-row button {
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            border-radius: 6px;
+            padding: 0.45rem 0.9rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .hash-row button:hover { background: #444c56; }
+
+        #hash-output {
+            display: none;
+            font-family: monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
+            color: var(--accent-light);
+            margin-top: 0.25rem;
+        }
+
+        .copy-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚡ Intern Hackathon 2025</div>
+        <div class="stage-pill">Stage 1 of 6</div>
+    </header>
+
+    <div class="progress">
+        <div class="progress-segment current"  id="seg-1"></div>
+        <div class="progress-segment"           id="seg-2"></div>
+        <div class="progress-segment"           id="seg-3"></div>
+        <div class="progress-segment"           id="seg-4"></div>
+        <div class="progress-segment"           id="seg-5"></div>
+        <div class="progress-segment"           id="seg-6"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Stage 1 — The Warmup</div>
+
+        <!-- ============================================================
+             PROBLEM DESCRIPTION
+             Edit this section to write your challenge.
+             Supported tags: <p> <ul> <ol> <li> <pre><code> <code>
+             ============================================================ -->
+        <div class="problem">
+            <p>
+                Welcome to the hackathon! This first stage is a warmup to get you comfortable
+                with the format. Read carefully — you need all three answers correct to advance.
+            </p>
+            <p>Consider the following Python function:</p>
+            <pre><code>def mystery(n):
+    if n &lt;= 1:
+        return n
+    return mystery(n - 1) + mystery(n - 2)</code></pre>
+            <p>Answer all three questions below:</p>
+            <ol>
+                <li>What does <code>mystery(7)</code> return?</li>
+                <li>What is the name of the algorithmic technique this function uses?</li>
+                <li>
+                    What is the Big-O time complexity of this function?<br>
+                    Use the form <code>O(x^n)</code> — replace <code>x</code> with a number.
+                </li>
+            </ol>
+            <div class="hint-box">
+                Answers are case-insensitive and whitespace is ignored.
+                You won't be told <em>which</em> answers are wrong — only how many.
+            </div>
+        </div>
+        <!-- ============================================================ -->
+    </div>
+
+    <div class="answer-card">
+        <h2>Submit your answers</h2>
+        <div class="fields">
+            <div class="field">
+                <label for="a1">Answer 1 — <em>mystery(7)</em></label>
+                <input type="text" id="a1" placeholder="e.g. 42" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="field">
+                <label for="a2">Answer 2 — <em>algorithmic technique</em></label>
+                <input type="text" id="a2" placeholder="one word" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="field">
+                <label for="a3">Answer 3 — <em>time complexity</em></label>
+                <input type="text" id="a3" placeholder="O(...)" autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+        <div class="form-footer">
+            <button id="submit-btn" onclick="checkAnswers()">Submit Answers</button>
+            <span id="feedback"></span>
+            <span id="attempt-count"></span>
+        </div>
+    </div>
+
+    <div id="success-banner">
+        <h2>Stage 1 Complete!</h2>
+        <p>All three answers correct. Head to the next stage.</p>
+        <a id="next-link" class="next-btn" href="#">Continue to Stage 2 →</a>
+    </div>
+
+
+    <!-- ================================================================
+         ORGANIZER TOOLS
+         Use this to generate answer hashes. DELETE this block before
+         sharing the page with participants.
+         ================================================================ -->
+    <details class="organizer">
+        <summary>Organizer tools — hash generator (delete before deploying)</summary>
+        <div class="hash-tool">
+            <p>
+                Type each correct answer below and click <strong>Get Hash</strong>.
+                Paste the resulting hash into the <code>ANSWER_HASHES</code> array in the
+                <code>&lt;script&gt;</code> at the bottom of this file.
+                Answers are normalised to <strong>lowercase + trimmed</strong> before hashing,
+                so generate hashes the same way.
+            </p>
+            <div class="hash-row">
+                <input type="text" id="hash-input" placeholder="Type the correct answer...">
+                <button onclick="generateHash()">Get Hash</button>
+            </div>
+            <div id="hash-output"></div>
+            <p class="copy-hint">Click the hash to copy it to your clipboard.</p>
+        </div>
+    </details>
+
+
+    <script>
+    // ===================================================================
+    //  STAGE CONFIGURATION — edit this block for each stage
+    // ===================================================================
+
+    const STAGE_NUMBER  = 1;
+    const NEXT_STAGE_URL = 'stage2-REPLACE_ME.html';   // ← URL of next page
+
+    // SHA-256 hashes of the correct answers.
+    // Answers are lowercased and trimmed before hashing.
+    // Use the organizer hash generator above to produce these, then
+    // paste them here and delete the generator block.
+    const ANSWER_HASHES = [
+        'PASTE_HASH_FOR_ANSWER_1_HERE',   // mystery(7)
+        'PASTE_HASH_FOR_ANSWER_2_HERE',   // algorithmic technique
+        'PASTE_HASH_FOR_ANSWER_3_HERE',   // time complexity
+    ];
+
+    // Optional: custom labels shown in the feedback message
+    const ANSWER_LABELS = ['mystery(7)', 'technique', 'complexity'];
+
+    // ===================================================================
+
+    let attempts = 0;
+
+    async function sha256(str) {
+        const buf = await crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(str)
+        );
+        return Array.from(new Uint8Array(buf))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+    }
+
+    async function checkAnswers() {
+        const btn      = document.getElementById('submit-btn');
+        const feedback = document.getElementById('feedback');
+        const raw      = ['a1', 'a2', 'a3'].map(id =>
+                             document.getElementById(id).value.trim().toLowerCase());
+
+        if (raw.some(v => v === '')) {
+            feedback.textContent = 'Please fill in all three answers.';
+            feedback.className   = 'error';
+            return;
+        }
+
+        btn.disabled    = true;
+        btn.textContent = 'Checking…';
+
+        const hashes  = await Promise.all(raw.map(sha256));
+        const correct = hashes.filter((h, i) => h === ANSWER_HASHES[i]).length;
+
+        attempts++;
+        document.getElementById('attempt-count').textContent =
+            `Attempt ${attempts}`;
+
+        if (correct === 3) {
+            feedback.textContent = '';
+            btn.style.display    = 'none';
+            document.getElementById('seg-' + STAGE_NUMBER).className =
+                'progress-segment complete';
+            const banner = document.getElementById('success-banner');
+            document.getElementById('next-link').href = NEXT_STAGE_URL;
+            banner.style.display = 'block';
+            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            const plural   = correct === 1 ? 'answer' : 'answers';
+            feedback.textContent =
+                `${correct} out of 3 ${plural} correct — keep trying.`;
+            feedback.className   = 'error';
+            btn.disabled         = false;
+            btn.textContent      = 'Submit Answers';
+        }
+    }
+
+    // Submit on Enter
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter' &&
+            document.activeElement &&
+            document.activeElement.closest('.answer-card')) {
+            checkAnswers();
+        }
+    });
+
+    // ── Organizer hash generator ──────────────────────────────────────
+    async function generateHash() {
+        const val = document.getElementById('hash-input').value.trim().toLowerCase();
+        if (!val) return;
+        const hash = await sha256(val);
+        const out  = document.getElementById('hash-output');
+        out.textContent  = hash;
+        out.style.display = 'block';
+    }
+
+    document.getElementById('hash-output')?.addEventListener('click', function () {
+        navigator.clipboard.writeText(this.textContent).then(() => {
+            const old = this.style.color;
+            this.style.color = '#10b981';
+            setTimeout(() => { this.style.color = old; }, 600);
+        });
+    });
+    </script>
+
+</body>
+</html>
