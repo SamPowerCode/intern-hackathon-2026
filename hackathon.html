@@ -347,28 +347,44 @@
         <div class="stage-wrapper" id="stage-1">
 
             <div class="card">
-                <div class="card-title">Stage 1 — The Warmup</div>
-                <!-- EDIT: problem content for stage 1 -->
+                <div class="card-title">Stage 1 — The Lobby</div>
                 <div class="problem">
                     <p>
-                        Welcome to the hackathon! This first stage is a warmup to get
-                        you comfortable with the format. Read carefully — you need all
-                        three answers correct to advance.
+                        At 09:14 this morning, <strong>Mittens Fluffington III</strong> — a 3-year-old
+                        tabby belonging to the Head of Security — walked across the emergency admin
+                        terminal and triggered the VAULT-9 lockdown sequence.
                     </p>
-                    <p>Consider the following Python function:</p>
-                    <pre><code>def mystery(n):
-    if n &lt;= 1:
-        return n
-    return mystery(n - 1) + mystery(n - 2)</code></pre>
-                    <p>Answer all three questions:</p>
-                    <ol>
-                        <li>What does <code>mystery(7)</code> return?</li>
-                        <li>What is the name of the algorithmic technique this uses?</li>
-                        <li>What is the Big-O time complexity? Use the form <code>O(x^n)</code>.</li>
-                    </ol>
+                    <p>
+                        The system captured her raw keystroke log and encoded it into three emergency
+                        lock codes using the VAULT-9 proprietary algorithm. Decode them to open the
+                        lobby door.
+                    </p>
+                    <p>Save the script below as <code>lobby_decoder.py</code> and run it:</p>
+                    <pre><code>python3 lobby_decoder.py</code></pre>
+                    <pre><code>#!/usr/bin/env python3
+"""VAULT-9 Emergency Lockdown Decoder v2.1"""
+
+MITTENS_KEYLOG = "fjk39dls02pqzxcv8nm1"
+
+
+def decode_lockdown(keylog):
+    codes = []
+    for i in range(3):
+        acc = 0
+        for j, ch in enumerate(keylog):
+            acc = (acc * 31 + ord(ch) + i * 17) &amp; 0xFFFF
+        codes.append(acc % 9000 + 1000)
+    return codes
+
+
+if __name__ == "__main__":
+    codes = decode_lockdown(MITTENS_KEYLOG)
+    print(f"CODE ALPHA : {codes[0]}")
+    print(f"CODE BETA  : {codes[1]}")
+    print(f"CODE GAMMA : {codes[2]}")</code></pre>
                     <div class="hint-box">
-                        Answers are case-insensitive and whitespace is ignored.
-                        You won't be told <em>which</em> answers are wrong — only how many.
+                        Answers are the three integers printed by the script.
+                        Answers are case-insensitive. You won't be told <em>which</em> are wrong — only how many.
                     </div>
                 </div>
             </div>
@@ -397,9 +413,9 @@
             '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
         ],
         labels: [
-            'Answer 1 — mystery(7)',
-            'Answer 2 — algorithmic technique',
-            'Answer 3 — time complexity'
+            'Code ALPHA',
+            'Code BETA',
+            'Code GAMMA'
         ]
     };
 
