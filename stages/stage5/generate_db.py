@@ -68,11 +68,12 @@ c.executemany(
 )
 
 access = [
-    ("V001", "alice",   "VIEW_BALANCE",    "2024-03-12 08:00:01"),
-    ("V002", "bob",     "VIEW_BALANCE",    "2024-03-12 08:12:44"),
-    ("V003", "carol",   "TRANSFER",        "2024-03-12 08:44:11"),
-    ("V008", "MITTENS", "EMERGENCY_UNLOCK","2024-03-12 09:14:22"),
-    ("V001", "sysadmin","AUDIT",           "2024-03-12 09:20:00"),
+    ("V001", "alice",    "VIEW_BALANCE",    "2024-03-12 08:00:01"),
+    ("V002", "bob",      "VIEW_BALANCE",    "2024-03-12 08:12:44"),
+    ("V003", "carol",    "TRANSFER",        "2024-03-12 08:44:11"),
+    ("V005", "WHISKERS", "EMERGENCY_UNLOCK","2024-03-12 09:14:19"),
+    ("V008", "MITTENS",  "EMERGENCY_UNLOCK","2024-03-12 09:14:22"),
+    ("V001", "sysadmin", "AUDIT",           "2024-03-12 09:20:00"),
 ]
 c.executemany(
     "INSERT INTO access_log (vault_id, username, action, timestamp) VALUES (?,?,?,?)",

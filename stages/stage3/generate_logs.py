@@ -89,6 +89,20 @@ for hour in range(6, 10):
                 lines.append(info(t, "Scheduled maintenance ping", vault=v))
 
 # 09:14 - The Incident
+# Unrelated CRITICAL events that appear before the feline lockdown (red herrings)
+lines.append(critical(
+    ts(9, 13, 11, 221),
+    "System integrity check failed component=AUTH_MODULE error=CRC_MISMATCH"
+))
+lines.append(critical(
+    ts(9, 13, 47, 889),
+    f"Failsafe sensor triggered sensor_id=FSM-9 vault_id=V003 session=SID-0031"
+))
+lines.append(critical(
+    ts(9, 14,  1, 112),
+    f"Intrusion alert motion_zone=LOBBY session=SID-4422 status=FALSE_POSITIVE"
+))
+
 # Spurious CRITICAL before lockdowns (counts toward FELINE_CRITICAL_COUNT)
 lines.append(critical(
     ts(9, 14, 22, 441),

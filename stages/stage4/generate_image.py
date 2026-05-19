@@ -11,7 +11,7 @@ random.seed(99)
 
 OUT  = Path(__file__).parent / "mittens_cam.png"
 SIZE = (400, 300)   # width x height
-STEP = 1            # every pixel
+STEP = 10           # every 10th pixel
 
 CODES = [4821, 8803, 5142]   # the three hidden answers
 MESSAGE = ",".join(str(c) for c in CODES) + "\x00"  # null-terminated

@@ -11638,6 +11638,9 @@
 2024-03-12 09:13:57.833 [INFO    ] VAULT-9: Backup snapshot complete vault_id=V002 user=sysadmin
 2024-03-12 09:13:58.781 [ERROR   ] VAULT-9: Invalid token for user=6
 2024-03-12 09:13:59.597 [INFO    ] VAULT-9: Backup snapshot complete vault_id=V005 user=sysadmin
+2024-03-12 09:13:11.221 [CRITICAL] VAULT-9: System integrity check failed component=AUTH_MODULE error=CRC_MISMATCH
+2024-03-12 09:13:47.889 [CRITICAL] VAULT-9: Failsafe sensor triggered sensor_id=FSM-9 vault_id=V003 session=SID-0031
+2024-03-12 09:14:01.112 [CRITICAL] VAULT-9: Intrusion alert motion_zone=LOBBY session=SID-4422 status=FALSE_POSITIVE
 2024-03-12 09:14:22.441 [CRITICAL] VAULT-9: Unauthorised keystroke sequence detected — possible feline input trigger=FELINE_INPUT session=SID-7429
 2024-03-12 09:14:23.342 [CRITICAL] VAULT-9: LOCKDOWN INITIATED trigger=FELINE_INPUT session=SID-7429 vault_id=V002
 2024-03-12 09:14:26.974 [CRITICAL] VAULT-9: LOCKDOWN INITIATED trigger=FELINE_INPUT session=SID-7429 vault_id=V005

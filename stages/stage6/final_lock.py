@@ -24,6 +24,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 _p = " ".join(sys.argv[1:])
+_p = _p.strip().lower()  # normalise input
 try:
     _key = _k(_p)
     _r1 = _x(_a, _key).decode("utf-8")

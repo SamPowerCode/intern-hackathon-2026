@@ -2,22 +2,9 @@
     VAULT-9 logs every event. Mittens' intrusion is buried in thousands of lines of system
     logs. The terminal below has <code>vault_logs.txt</code> pre-loaded.
 </p>
-<p>Use the terminal to answer the three questions:</p>
+<p>Find three pieces of information buried in the log:</p>
 <ol>
-    <li>
-        How many <code>CRITICAL</code> log lines contain <code>FELINE_INPUT</code>?<br>
-        <small>Try: <code>grep -c "FELINE_INPUT" vault_logs.txt</code></small>
-    </li>
-    <li>
-        What is the <strong>numeric part</strong> of the session ID in the lockdown event?<br>
-        <small>e.g. if the log shows <code>session=SID-1234</code>, the answer is <code>1234</code></small>
-    </li>
-    <li>
-        Which vault was locked <strong>last</strong>? (e.g. <code>V001</code>)
-    </li>
+    <li>How many <code>CRITICAL</code> lines are directly associated with the feline intrusion?</li>
+    <li>What was the session ID of the lockdown? (numeric part only)</li>
+    <li>Which vault was locked <strong>last</strong>?</li>
 </ol>
-<div class="hint-box">
-    Supported commands: <code>grep</code> <code>grep -c</code> <code>grep -o</code>
-    <code>wc -l</code> <code>cut</code> <code>awk</code> <code>tail</code> <code>head</code>
-    <code>sort</code> <code>uniq</code> — and pipes with <code>|</code>
-</div>

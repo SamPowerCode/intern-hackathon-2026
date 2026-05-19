@@ -1,28 +1,24 @@
 <p>
     The vault management database holds the master override codes.
-    Mittens walked on the delete key — several records are now marked deleted.
+    Mittens walked on the delete key — some records are now marked deleted.
     But SQLite doesn't truly forget.
 </p>
 <p>
     The SQL editor below is connected to <code>vault_records.db</code>.
-    Tables: <code>vaults</code>, <code>transactions</code>, <code>access_log</code>.
-    Use <kbd>Ctrl+Enter</kbd> or the Run button to execute a query.
+    Use <kbd>Ctrl+Enter</kbd> or the Run button to execute queries.
 </p>
 <ol>
+    <li>One vault record was quietly erased during the incident. What is its emergency code?</li>
     <li>
-        What is the <code>emergency_code</code> of vault <code>V006</code>
-        (which has a non-NULL <code>deleted_at</code>)?
+        The lockdown triggered a cascade of automatic transaction reversals.
+        What was the total amount reversed? (integer, no decimals)
     </li>
     <li>
-        What is the total <code>amount</code> of all transactions
-        where <code>status = 'REVERSED'</code>? (integer, no decimals)
-    </li>
-    <li>
-        There is an entry in <code>access_log</code> where <code>username = 'MITTENS'</code>.
-        Join it to the <code>vaults</code> table and find that vault's <code>emergency_code</code>.
+        Something accessed a vault at exactly the moment the lockdown began.
+        Find that vault's emergency code.
     </li>
 </ol>
 <div class="hint-box">
-    Tip: run <code>SELECT name FROM sqlite_master WHERE type='table';</code> to list tables,
-    or <code>PRAGMA table_info(vaults);</code> to see columns.
+    Tip: <code>SELECT name FROM sqlite_master WHERE type='table';</code> lists tables.
+    <code>PRAGMA table_info(tablename);</code> shows columns.
 </div>

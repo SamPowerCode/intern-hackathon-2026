@@ -177,7 +177,7 @@ print("  Done.")
 
 print("\nPatching hackathon.html...")
 
-html_path = ROOT / "hackathon.html"
+html_path = ROOT / ("index.html" if (ROOT / "index.html").exists() else "hackathon.html")
 html = html_path.read_text()
 
 # Replace Stage 1 answer hashes in STAGE_1_CONFIG
