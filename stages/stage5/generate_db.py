@@ -13,12 +13,12 @@ c = conn.cursor()
 
 c.executescript("""
 CREATE TABLE vaults (
-    id           TEXT PRIMARY KEY,
-    name         TEXT NOT NULL,
-    balance      REAL NOT NULL,
-    status       TEXT NOT NULL,
+    id             TEXT PRIMARY KEY,
+    name           TEXT NOT NULL,
+    balance        REAL NOT NULL,
+    status         TEXT NOT NULL,
     emergency_code TEXT NOT NULL,
-    deleted_at   TEXT
+    deleted_at     TEXT
 );
 
 CREATE TABLE transactions (
@@ -44,23 +44,31 @@ vaults = [
     ("V003", "Bond Portfolio",    7_100_000, "LOCKED",   "6053", None),
     ("V004", "Cash Reserves",     2_800_000, "LOCKED",   "8814", None),
     ("V005", "Precious Metals",   6_300_000, "LOCKED",   "3391", None),
+    # V006 deleted at lockdown moment — this is Q1's target
     ("V006", "Petty Cash",           50_000, "DELETED",  "3847", "2024-03-12 09:14:22"),
-    ("V007", "Slush Fund",           12_000, "DELETED",  "9901", "2024-03-12 09:14:22"),
+    # V007 was archived the night before (routine, not lockdown-related)
+    ("V007", "Slush Fund",           12_000, "ARCHIVED", "9901", "2024-03-11 17:30:00"),
     ("V008", "Night Safe",            5_000, "LOCKED",   "9163", None),
+    ("V009", "Contingency Fund",    850_000, "LOCKED",   "4417", None),
 ]
 c.executemany("INSERT INTO vaults VALUES (?,?,?,?,?,?)", vaults)
 
 transactions = [
+    # Normal completed transactions (noise)
     ("V001", 500_000, "COMPLETED",  "2024-03-12 08:01:00"),
     ("V002", 120_000, "COMPLETED",  "2024-03-12 08:15:00"),
+    ("V003", 200_000, "COMPLETED",  "2024-03-12 08:45:00"),
+    ("V004",  75_000, "PENDING",    "2024-03-12 09:00:00"),
+    ("V005", 430_000, "COMPLETED",  "2024-03-12 07:30:00"),
+    ("V009",  60_000, "COMPLETED",  "2024-03-12 07:55:00"),
+    ("V002",  33_000, "CANCELLED",  "2024-03-12 09:10:00"),
+    ("V001",  18_000, "PENDING",    "2024-03-12 09:12:00"),
+    # Lockdown reversals — V001 has the largest (Q2 target)
     ("V001",  12_500, "REVERSED",   "2024-03-12 09:14:23"),
     ("V003",   8_750, "REVERSED",   "2024-03-12 09:14:24"),
     ("V002",   9_000, "REVERSED",   "2024-03-12 09:14:24"),
     ("V004",   7_300, "REVERSED",   "2024-03-12 09:14:25"),
     ("V005",  10_200, "REVERSED",   "2024-03-12 09:14:25"),
-    ("V003", 200_000, "COMPLETED",  "2024-03-12 08:45:00"),
-    ("V004",  75_000, "PENDING",    "2024-03-12 09:00:00"),
-    ("V005", 430_000, "COMPLETED",  "2024-03-12 07:30:00"),
 ]
 c.executemany(
     "INSERT INTO transactions (vault_id, amount, status, created_at) VALUES (?,?,?,?)",
@@ -68,12 +76,21 @@ c.executemany(
 )
 
 access = [
+    # Normal daytime activity
     ("V001", "alice",    "VIEW_BALANCE",    "2024-03-12 08:00:01"),
     ("V002", "bob",      "VIEW_BALANCE",    "2024-03-12 08:12:44"),
     ("V003", "carol",    "TRANSFER",        "2024-03-12 08:44:11"),
+    ("V009", "dave",     "VIEW_BALANCE",    "2024-03-12 09:05:33"),
+    ("V004", "eve",      "TRANSFER",        "2024-03-12 09:09:17"),
+    # Red herring: WHISKERS does EMERGENCY_UNLOCK 3 seconds before lockdown
     ("V005", "WHISKERS", "EMERGENCY_UNLOCK","2024-03-12 09:14:19"),
+    # Red herring: human user VIEW_BALANCE during the exact second
+    ("V002", "alice",    "VIEW_BALANCE",    "2024-03-12 09:14:22"),
+    # Q3 target: MITTENS at the exact lockdown timestamp
     ("V008", "MITTENS",  "EMERGENCY_UNLOCK","2024-03-12 09:14:22"),
+    # Post-incident noise
     ("V001", "sysadmin", "AUDIT",           "2024-03-12 09:20:00"),
+    ("V003", "sysadmin", "AUDIT",           "2024-03-12 09:20:01"),
 ]
 c.executemany(
     "INSERT INTO access_log (vault_id, username, action, timestamp) VALUES (?,?,?,?)",
@@ -86,19 +103,28 @@ conn.close()
 conn2 = sqlite3.connect(OUT)
 c2 = conn2.cursor()
 
+# Q1: vault deleted at the lockdown moment (not the routine archive)
 q1 = c2.execute(
-    "SELECT emergency_code FROM vaults WHERE id='V006' AND deleted_at IS NOT NULL"
+    "SELECT emergency_code FROM vaults WHERE deleted_at = '2024-03-12 09:14:22'"
 ).fetchone()[0]
 
-q2 = c2.execute(
-    "SELECT CAST(SUM(amount) AS INTEGER) FROM transactions WHERE status='REVERSED'"
-).fetchone()[0]
+# Q2: emergency code of the vault with the largest single REVERSED transaction
+q2 = c2.execute("""
+    SELECT v.emergency_code
+    FROM transactions t
+    JOIN vaults v ON t.vault_id = v.id
+    WHERE t.status = 'REVERSED'
+    ORDER BY t.amount DESC
+    LIMIT 1
+""").fetchone()[0]
 
+# Q3: vault accessed via EMERGENCY_UNLOCK at the exact lockdown timestamp
 q3 = c2.execute("""
     SELECT v.emergency_code
     FROM access_log a
     JOIN vaults v ON a.vault_id = v.id
-    WHERE a.username = 'MITTENS'
+    WHERE a.timestamp = '2024-03-12 09:14:22'
+      AND a.action = 'EMERGENCY_UNLOCK'
 """).fetchone()[0]
 
 conn2.close()

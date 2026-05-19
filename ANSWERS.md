@@ -23,7 +23,7 @@ CODES  = [7790, 2244, 9873]
 def compute_code(seed, keylog, idx):
     acc = seed
     for j, ch in enumerate(keylog):
-        acc = (acc * 31 + ord(ch) + idx * 17) & 0xFFFF
+        acc = (acc * 31 + ord(ch) + idx * 17) % 65536
     return acc % 9000 + 1000
 
 for i, target in enumerate(CODES):
@@ -78,22 +78,33 @@ grep "LOCKDOWN INITIATED" vault_logs.txt | tail -1 | awk '{print $2}' | cut -d: 
 | Override code 2 | `8803` |
 | Override code 3 | `5142` |
 
-**Extraction:** `STEP = 10`, LSB of R channel, every 10th pixel starting at pixel 0.
+**Extraction:** `STEP = 6` (= Stage 3 Q1 answer: 6 feline-triggered CRITICAL events), LSB of R channel.
+Tool outputs hex string `12D522631416` — split into 3 × 4-char groups and convert hex→decimal: `0x12D5`=4821, `0x2263`=8803, `0x1416`=5142.
 
 ---
 
 ## Stage 5 — The Records Room
 | Field | Answer |
 |-------|--------|
-| Deleted vault emergency code | `3847` |
-| Sum of reversed transactions | `47750` |
-| Mittens vault emergency code | `9163` |
+| Vault deleted at lockdown moment | `3847` |
+| Largest-reversal vault emergency code | `7741` |
+| Emergency-unlock-at-lockdown vault code | `9163` |
 
 **Queries:**
 ```sql
-SELECT emergency_code FROM vaults WHERE deleted_at IS NOT NULL AND balance = 50000;
-SELECT CAST(SUM(amount) AS INTEGER) FROM transactions WHERE status = 'REVERSED';
-SELECT v.emergency_code FROM access_log a JOIN vaults v ON a.vault_id = v.id WHERE a.username = 'MITTENS';
+-- Q1: vault deleted at the lockdown timestamp (V007 was archived the night before — red herring)
+SELECT emergency_code FROM vaults WHERE deleted_at = '2024-03-12 09:14:22';
+
+-- Q2: vault with largest single REVERSED transaction (not total sum)
+SELECT v.emergency_code
+FROM transactions t JOIN vaults v ON t.vault_id = v.id
+WHERE t.status = 'REVERSED'
+ORDER BY t.amount DESC LIMIT 1;
+
+-- Q3: EMERGENCY_UNLOCK at exact lockdown timestamp (WHISKERS at 09:14:19 is red herring)
+SELECT v.emergency_code
+FROM access_log a JOIN vaults v ON a.vault_id = v.id
+WHERE a.timestamp = '2024-03-12 09:14:22' AND a.action = 'EMERGENCY_UNLOCK';
 ```
 
 ---

@@ -310,15 +310,25 @@ Tool outputs hex string `12D522631416` — split into 3 × 4-char groups and con
 ## Stage 5 — The Records Room
 | Field | Answer |
 |-------|--------|
-| Deleted vault emergency code | `{s5_answers[0]}` |
-| Sum of reversed transactions | `{s5_answers[1]}` |
-| Mittens vault emergency code | `{s5_answers[2]}` |
+| Vault deleted at lockdown moment | `{s5_answers[0]}` |
+| Largest-reversal vault emergency code | `{s5_answers[1]}` |
+| Emergency-unlock-at-lockdown vault code | `{s5_answers[2]}` |
 
 **Queries:**
 ```sql
-SELECT emergency_code FROM vaults WHERE deleted_at IS NOT NULL AND balance = 50000;
-SELECT CAST(SUM(amount) AS INTEGER) FROM transactions WHERE status = 'REVERSED';
-SELECT v.emergency_code FROM access_log a JOIN vaults v ON a.vault_id = v.id WHERE a.username = 'MITTENS';
+-- Q1: vault deleted at the lockdown timestamp (V007 was archived the night before — red herring)
+SELECT emergency_code FROM vaults WHERE deleted_at = '2024-03-12 09:14:22';
+
+-- Q2: vault with largest single REVERSED transaction (not total sum)
+SELECT v.emergency_code
+FROM transactions t JOIN vaults v ON t.vault_id = v.id
+WHERE t.status = 'REVERSED'
+ORDER BY t.amount DESC LIMIT 1;
+
+-- Q3: EMERGENCY_UNLOCK at exact lockdown timestamp (WHISKERS at 09:14:19 is red herring)
+SELECT v.emergency_code
+FROM access_log a JOIN vaults v ON a.vault_id = v.id
+WHERE a.timestamp = '2024-03-12 09:14:22' AND a.action = 'EMERGENCY_UNLOCK';
 ```
 
 ---
