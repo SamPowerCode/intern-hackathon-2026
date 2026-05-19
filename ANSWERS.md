@@ -23,7 +23,7 @@ CODES  = [7790, 2244, 9873]
 def compute_code(seed, keylog, idx):
     acc = seed
     for j, ch in enumerate(keylog):
-        acc = (acc * 31 + ord(ch) + idx * 17) & 0xFFFF
+        acc = (acc * 31 + ord(ch) + idx * 17) % 65536
     return acc % 9000 + 1000
 
 for i, target in enumerate(CODES):
