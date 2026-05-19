@@ -302,7 +302,8 @@ grep "LOCKDOWN INITIATED" vault_logs.txt | tail -1 | awk '{{print $2}}' | cut -d
 | Override code 2 | `{s4_answers[1]}` |
 | Override code 3 | `{s4_answers[2]}` |
 
-**Extraction:** `STEP = 10`, LSB of R channel, every 10th pixel starting at pixel 0.
+**Extraction:** `STEP = 6` (= Stage 3 Q1 answer: 6 feline-triggered CRITICAL events), LSB of R channel.
+Tool outputs hex string `12D522631416` — split into 3 × 4-char groups and convert hex→decimal: `0x12D5`=4821, `0x2263`=8803, `0x1416`=5142.
 
 ---
 
