@@ -149,13 +149,18 @@ OUT.write_text("\n".join(lines) + "\n")
 
 # Print answers
 content = OUT.read_text()
+
+# Q1: CRITICAL lines that contain FELINE_INPUT
 count = sum(1 for l in content.splitlines() if "FELINE_INPUT" in l and "[CRITICAL]" in l)
-last_vault = None
+
+# Q3: seconds value from the timestamp of the last LOCKDOWN INITIATED event
+last_lock_second = None
 for line in content.splitlines():
-    m = re.search(r"LOCKDOWN INITIATED.*vault_id=(\S+)", line)
-    if m:
-        last_vault = m.group(1)
+    if "LOCKDOWN INITIATED" in line:
+        m = re.search(r'\d{2}:\d{2}:(\d{2})\.\d+', line)
+        if m:
+            last_lock_second = int(m.group(1))
 
 print(count)
 print(SESSION_ID)
-print(last_vault)
+print(last_lock_second)

@@ -1,10 +1,21 @@
 <p>
-    VAULT-9 logs every event. Mittens' intrusion is buried in thousands of lines of system
-    logs. The terminal below has <code>vault_logs.txt</code> pre-loaded.
+    VAULT-9 logs every event. Mittens' intrusion is buried in thousands of lines of
+    system noise. The terminal below has <code>vault_logs.txt</code> pre-loaded.
 </p>
-<p>Find three pieces of information buried in the log:</p>
+<p>Extract three specific values from the log:</p>
 <ol>
-    <li>How many <code>CRITICAL</code> lines are directly associated with the feline intrusion?</li>
-    <li>What was the session ID of the lockdown? (numeric part only)</li>
-    <li>Which vault was locked <strong>last</strong>?</li>
+    <li>
+        How many log events were <strong>directly caused</strong> by the intrusion?
+        (Not all log events mentioning the intrusion are the same severity — make sure
+        you're counting the right ones.)
+    </li>
+    <li>
+        Every lockdown event carries a unique numeric tag that identifies the
+        session. What is it?
+    </li>
+    <li>
+        At what <strong>second</strong> within the <code>09:14</code> minute was the
+        final vault locked? Give just the seconds value from the timestamp
+        (e.g. if the time was <code>09:14:37.421</code>, the answer is <code>37</code>).
+    </li>
 </ol>

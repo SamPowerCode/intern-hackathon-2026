@@ -53,15 +53,20 @@ for i, target in enumerate(CODES):
 ## Stage 3 — The Server Room
 | Field | Answer |
 |-------|--------|
-| CRITICAL FELINE_INPUT count | `6` |
-| Session number | `7429` |
-| Last vault locked | `V004` |
+| CRITICAL intrusion event count | `6` |
+| Lockdown session number | `7429` |
+| Seconds of final vault lock | `35` |
 
 **Commands:**
 ```bash
-grep -c "FELINE_INPUT" vault_logs.txt
-grep "FELINE_INPUT" vault_logs.txt | grep -o "SID-[0-9]*" | head -1 | cut -d- -f2
-grep "LOCKDOWN INITIATED" vault_logs.txt | tail -1 | grep -o "vault_id=V[0-9]*" | cut -d= -f2
+# Q1 — must filter for CRITICAL severity AND feline trigger (INFO-level feline events exist)
+grep "\[CRITICAL\]" vault_logs.txt | grep -c "FELINE_INPUT"
+
+# Q2 — session number from lockdown events specifically
+grep "LOCKDOWN INITIATED" vault_logs.txt | grep -o "SID-[0-9]*" | head -1 | cut -d- -f2
+
+# Q3 — seconds from timestamp of last lockdown event
+grep "LOCKDOWN INITIATED" vault_logs.txt | tail -1 | awk '{print $2}' | cut -d: -f3 | cut -d. -f1
 ```
 
 ---
