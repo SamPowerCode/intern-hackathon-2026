@@ -266,10 +266,11 @@ for i, target in enumerate(CODES):
 | Door B code | `{s2_answers[1]}` |
 | Door C code | `{s2_answers[2]}` |
 
-**Bugs to fix:**
-1. `highlevel` → `high_level` (NameError on variable name mismatch)
-2. `[1:4]` → `[:3]` (slice off-by-one skipping highest card)
-3. `i % 2 != 0` → `i % 2 == 0` (XOR wrong index parity)
+**Bugs to fix (4 total — not told to participants):**
+1. Sort key `(-c[1], -c[2])` → `(-c[1], c[2])` — second key should sort ascending, not descending (affects Door C)
+2. `highlevel` → `high_level` — NameError, variable defined under one name, used under another
+3. `[1:4]` → `[:3]` — off-by-one slice skips the highest-value card (affects Door B)
+4. `i % 2 != 0` → `i % 2 == 0` — XOR applied to odd indices instead of even (affects Door C)
 
 ---
 

@@ -18,22 +18,19 @@ KEYCARD_DATA = [
 
 
 def compute_door_codes(keycards):
-    sorted_cards = sorted(keycards, key=lambda c: (-c[1], c[2]))
+    sorted_cards = sorted(keycards, key=lambda c: (-c[1], -c[2]))
 
-    # Door A: sum of values for cards with level >= 4
-    highlevel = [c for c in sorted_cards if c[1] >= 4]   # BUG 1: variable name typo
-    door_a = sum(c[2] for c in high_level)                # NameError: high_level undefined
+    highlevel = [c for c in sorted_cards if c[1] >= 4]
+    door_a = sum(c[2] for c in high_level)
 
-    # Door B: product of access levels for the top 3 cards by value
-    top3 = sorted(keycards, key=lambda c: c[2], reverse=True)[1:4]  # BUG 2: should be [:3]
+    top3 = sorted(keycards, key=lambda c: c[2], reverse=True)[1:4]
     door_b = 1
     for c in top3:
         door_b *= c[1]
 
-    # Door C: XOR of values at even indices in the sorted list
     door_c = 0
     for i, c in enumerate(sorted_cards):
-        if i % 2 != 0:      # BUG 3: should be == 0
+        if i % 2 != 0:
             door_c ^= c[2]
 
     return door_a, door_b, door_c

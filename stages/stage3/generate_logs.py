@@ -89,7 +89,8 @@ for hour in range(6, 10):
                 lines.append(info(t, "Scheduled maintenance ping", vault=v))
 
 # 09:14 - The Incident
-# Unrelated CRITICAL events that appear before the feline lockdown (red herrings)
+
+# Unrelated CRITICAL events before the feline lockdown (red herrings with different session IDs)
 lines.append(critical(
     ts(9, 13, 11, 221),
     "System integrity check failed component=AUTH_MODULE error=CRC_MISMATCH"
@@ -101,6 +102,16 @@ lines.append(critical(
 lines.append(critical(
     ts(9, 14,  1, 112),
     f"Intrusion alert motion_zone=LOBBY session=SID-4422 status=FALSE_POSITIVE"
+))
+
+# INFO-level feline sensor events — NOT critical, must NOT be counted for Q1
+lines.append(info(
+    ts(9, 14,  8, 332),
+    f"Feline proximity sensor triggered trigger=FELINE_INPUT zone=TERMINAL_ROOM"
+))
+lines.append(info(
+    ts(9, 14, 15, 118),
+    f"Motion anomaly detected trigger=FELINE_INPUT vault_id=V001 status=MONITORING"
 ))
 
 # Spurious CRITICAL before lockdowns (counts toward FELINE_CRITICAL_COUNT)
@@ -119,8 +130,14 @@ for vault in LOCKDOWN_ORDER:
     ))
     lock_second += 3
 
-# Post-incident noise
-for second in range(40, 60):
+# Post-incident noise — also mentions vault_ids so simple vault_id greps add noise
+for i, vault in enumerate(LOCKDOWN_ORDER):
+    lines.append(info(
+        ts(9, 14, 40 + i * 2, random.randint(0, 999)),
+        f"Lock status verified vault_id={vault} status=SECURED"
+    ))
+
+for second in range(50, 60):
     t = ts(9, 14, second, random.randint(0, 999))
     lines.append(info(t, "LOCKDOWN CONFIRMED all vaults secured"))
 
