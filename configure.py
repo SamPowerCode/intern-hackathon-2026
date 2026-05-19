@@ -69,11 +69,12 @@ def run_script(rel_path: str, *args) -> list:
 
 print("Running stage scripts...")
 
-# Stage 1: lobby_decoder.py — output lines are "CODE X : NNNN"
-s1_lines = run_script("stages/stage1/lobby_decoder.py")
-s1_answers = [l.split(": ", 1)[1].strip() for l in s1_lines if ": " in l]
-assert len(s1_answers) == 3, f"Stage 1: expected 3 answers, got {s1_answers}"
-print(f"  Stage 1: {s1_answers}")
+# Stage 1: generate_stage1.py — first 3 lines are seeds (answers), next 3 are codes (displayed)
+s1_lines = run_script("stages/stage1/generate_stage1.py")
+assert len(s1_lines) == 6, f"Stage 1: expected 6 lines from generator, got {s1_lines}"
+s1_answers = s1_lines[:3]   # seeds — what participants type
+s1_codes   = s1_lines[3:]   # codes — shown in the problem description
+print(f"  Stage 1: answers={s1_answers}  codes={s1_codes}")
 
 # Stage 2: keycard_auth_solution.py — output lines are "DOOR X CODE: NNNN"
 s2_lines = run_script("stages/stage2/keycard_auth_solution.py")
@@ -209,6 +210,11 @@ html = re.sub(
     html,
     flags=re.DOTALL
 )
+
+# Inject Stage 1 lock codes into the problem description
+html = html.replace('__STAGE1_ALPHA__', s1_codes[0])
+html = html.replace('__STAGE1_BETA__',  s1_codes[1])
+html = html.replace('__STAGE1_GAMMA__', s1_codes[2])
 
 html_path.write_text(html)
 print("  hackathon.html patched.")
