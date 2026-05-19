@@ -23,7 +23,7 @@ CODES  = [7790, 2244, 9873]
 def compute_code(seed, keylog, idx):
     acc = seed
     for j, ch in enumerate(keylog):
-        acc = (acc * 31 + ord(ch) + idx * 17) % 65536
+        acc = (acc * 31 + ord(ch) + idx * 17) & 0xFFFF
     return acc % 9000 + 1000
 
 for i, target in enumerate(CODES):
@@ -116,8 +116,12 @@ WHERE a.timestamp = '2024-03-12 09:14:22' AND a.action = 'EMERGENCY_UNLOCK';
 | Final code 2 | `1337` |
 | Final code 3 | `DONE` |
 
-**Bugs to fix:**
-1. Uncomment `import hashlib` (line 7, currently commented out)
-2. Remove `_p = _p.strip().lower()` — this lowercases the passphrase, breaking the hash
+**Bugs to fix (3 total — not told to participants):**
+1. `# import hashlib` → `import hashlib` — uncomment (NameError on first run)
+2. `_key[(i + 1) % len(_key)]` → `_key[i % len(_key)]` in `_x()` — off-by-one in XOR key index (silent wrong output)
+3. Remove `_p = _p.strip().lower()` — lowercases the passphrase, wrong SHA-256 hash (silent ACCESS DENIED)
+
+`_v()` is a decoy function — never called, never relevant.
 
 **Passphrase:** `Mittens Fluffington III`
+(Clue path: Stage 1 narrative names the cat → script docstring references "H.O.S. official vet registration" → Head of Security's cat's registered name)

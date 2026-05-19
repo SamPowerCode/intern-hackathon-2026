@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
-"""VAULT-9 Final Lock Override Module
-This module was obfuscated by the Head of Security after the incident.
-He left one note: "the passphrase is the cat's full name, as registered with the vet."
+"""VAULT-9 Final Lock Override Module v2.1
+Obfuscated post-incident. Access restricted.
+# Internal ref: auth key sourced from H.O.S. official vet registration
 """
 import sys
-# import hashlib   # accidentally removed (thanks, Mittens)
+# import hashlib
 
 
 def _k(_p):
     return hashlib.sha256(_p.encode()).digest()
 
 
+def _v(_s):
+    return sum(ord(c) for c in _s) & 0xFF
+
+
 def _x(_d, _key):
-    return bytes(b ^ _key[i % len(_key)] for i, b in enumerate(_d))
+    return bytes(b ^ _key[(i + 1) % len(_key)] for i, b in enumerate(_d))
 
 
 _a = bytes([0x21, 0x89, 0x10, 0x5e])
