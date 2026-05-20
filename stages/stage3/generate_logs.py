@@ -90,6 +90,20 @@ for hour in range(6, 10):
 
 # 09:14 - The Incident
 
+# INFO-level feline sensor events scattered through the morning — distractors for Q1
+lines.append(info(
+    ts(7, 23, 41, 502),
+    "Feline motion detected zone=BREAK_ROOM trigger=FELINE_INPUT status=DISMISSED"
+))
+lines.append(info(
+    ts(8,  5, 17,  83),
+    "Acoustic anomaly registered trigger=FELINE_INPUT sensor_id=ASN-11 zone=CORRIDOR_A status=ROUTINE"
+))
+lines.append(info(
+    ts(8, 47, 33, 791),
+    "Proximity sensor ping trigger=FELINE_INPUT zone=STAIRWELL status=MONITORING"
+))
+
 # Unrelated CRITICAL events before the feline lockdown (red herrings with different session IDs)
 lines.append(critical(
     ts(9, 13, 11, 221),
@@ -104,7 +118,7 @@ lines.append(critical(
     f"Intrusion alert motion_zone=LOBBY session=SID-4422 status=FALSE_POSITIVE"
 ))
 
-# INFO-level feline sensor events — NOT critical, must NOT be counted for Q1
+# INFO-level feline sensor events in the lead-up — NOT critical, must NOT be counted for Q1
 lines.append(info(
     ts(9, 14,  8, 332),
     f"Feline proximity sensor triggered trigger=FELINE_INPUT zone=TERMINAL_ROOM"
@@ -112,6 +126,12 @@ lines.append(info(
 lines.append(info(
     ts(9, 14, 15, 118),
     f"Motion anomaly detected trigger=FELINE_INPUT vault_id=V001 status=MONITORING"
+))
+
+# CRITICAL lockdown-adjacent event with a different SID — distractor for Q2
+lines.append(critical(
+    ts(9, 14, 20, 339),
+    f"LOCKDOWN PROTOCOL ACTIVE alert_level=ELEVATED session=SID-4422 reason=PERIMETER_BREACH"
 ))
 
 # Spurious CRITICAL before lockdowns (counts toward FELINE_CRITICAL_COUNT)

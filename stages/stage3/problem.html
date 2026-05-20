@@ -2,20 +2,9 @@
     VAULT-9 logs every event. Mittens' intrusion is buried in thousands of lines of
     system noise. The terminal below has <code>vault_logs.txt</code> pre-loaded.
 </p>
-<p>Extract three specific values from the log:</p>
+<p>Three pieces of information are hidden in the log. Find them.</p>
 <ol>
-    <li>
-        How many log events were <strong>directly caused</strong> by the intrusion?
-        (Not all log events mentioning the intrusion are the same severity — make sure
-        you're counting the right ones.)
-    </li>
-    <li>
-        Every lockdown event carries a unique numeric tag that identifies the
-        session. What is it?
-    </li>
-    <li>
-        At what <strong>second</strong> within the <code>09:14</code> minute was the
-        final vault locked? Give just the seconds value from the timestamp
-        (e.g. if the time was <code>09:14:37.421</code>, the answer is <code>37</code>).
-    </li>
+    <li>How many log events were directly caused by the intrusion?</li>
+    <li>What is the identifier attached to every lockdown event?</li>
+    <li>When was the final vault locked? (seconds only)</li>
 </ol>

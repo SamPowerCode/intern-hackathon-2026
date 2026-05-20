@@ -4,11 +4,11 @@ Obfuscated post-incident. Access restricted.
 # Internal ref: auth key sourced from H.O.S. official vet registration
 """
 import sys
-# import hashlib
+import hashlib
 
 
 def _k(_p):
-    return hashlib.sha256(_p.encode()).digest()
+    return hashlib.md5(_p.encode()).digest()
 
 
 def _v(_s):
@@ -28,7 +28,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 _p = " ".join(sys.argv[1:])
-_p = _p.strip().lower()  # normalise input
+_p = _p.strip().lower()
 try:
     _key = _k(_p)
     _r1 = _x(_a, _key).decode("utf-8")

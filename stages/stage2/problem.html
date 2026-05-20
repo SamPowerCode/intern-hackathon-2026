@@ -1,17 +1,7 @@
 <p>
     Mittens sat on the keyboard mid-rewrite and corrupted the keycard authentication
-    module. The script may or may not run — but even if it does, the output may be wrong.
-    Fix it and run the corrected version to get the door codes.
+    module. Fix it and run the corrected version to get the door codes.
 </p>
-
-<p><strong>What the algorithm is supposed to do:</strong></p>
-<ol>
-    <li>Sort keycards by access level <em>descending</em>, then by card value <em>ascending</em></li>
-    <li><strong>Door A:</strong> sum of card values for all keycards with access level ≥ 4</li>
-    <li><strong>Door B:</strong> product of access levels of the 3 highest-value keycards</li>
-    <li><strong>Door C:</strong> XOR of card values at even positions (0, 2, 4 …) in the sorted order</li>
-</ol>
-
 <p>Save the script below as <code>keycard_auth.py</code> and fix it:</p>
 <pre><code>#!/usr/bin/env python3
 """VAULT-9 Keycard Authentication Module
@@ -35,7 +25,7 @@ KEYCARD_DATA = [
 def compute_door_codes(keycards):
     sorted_cards = sorted(keycards, key=lambda c: (-c[1], -c[2]))
 
-    highlevel = [c for c in sorted_cards if c[1] &gt;= 4]
+    high_level = [c for c in sorted_cards if c[1] &gt; 4]
     door_a = sum(c[2] for c in high_level)
 
     top3 = sorted(keycards, key=lambda c: c[2], reverse=True)[1:4]
@@ -45,7 +35,7 @@ def compute_door_codes(keycards):
 
     door_c = 0
     for i, c in enumerate(sorted_cards):
-        if i % 2 != 0:
+        if i % 2 == 0:
             door_c ^= c[2]
 
     return door_a, door_b, door_c

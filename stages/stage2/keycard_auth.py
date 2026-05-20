@@ -20,7 +20,7 @@ KEYCARD_DATA = [
 def compute_door_codes(keycards):
     sorted_cards = sorted(keycards, key=lambda c: (-c[1], -c[2]))
 
-    highlevel = [c for c in sorted_cards if c[1] >= 4]
+    high_level = [c for c in sorted_cards if c[1] > 4]
     door_a = sum(c[2] for c in high_level)
 
     top3 = sorted(keycards, key=lambda c: c[2], reverse=True)[1:4]
@@ -30,7 +30,7 @@ def compute_door_codes(keycards):
 
     door_c = 0
     for i, c in enumerate(sorted_cards):
-        if i % 2 != 0:
+        if i % 2 == 0:
             door_c ^= c[2]
 
     return door_a, door_b, door_c

@@ -23,7 +23,7 @@ CODES  = [7790, 2244, 9873]
 def compute_code(seed, keylog, idx):
     acc = seed
     for j, ch in enumerate(keylog):
-        acc = (acc * 31 + ord(ch) + idx * 17) % 65536
+        acc = (acc * 31 + ord(ch) + idx * 17) & 0xFFFF
     return acc % 9000 + 1000
 
 for i, target in enumerate(CODES):
@@ -42,11 +42,10 @@ for i, target in enumerate(CODES):
 | Door B code | `48` |
 | Door C code | `8133` |
 
-**Bugs to fix (4 total — not told to participants):**
-1. Sort key `(-c[1], -c[2])` → `(-c[1], c[2])` — second key should sort ascending, not descending (affects Door C)
-2. `highlevel` → `high_level` — NameError, variable defined under one name, used under another
-3. `[1:4]` → `[:3]` — off-by-one slice skips the highest-value card (affects Door B)
-4. `i % 2 != 0` → `i % 2 == 0` — XOR applied to odd indices instead of even (affects Door C)
+**Bugs to fix (3 total — not told to participants):**
+1. Sort key `(-c[1], -c[2])` → `(-c[1], c[2])` — second key sorts value descending instead of ascending (affects Door C)
+2. `c[1] > 4` → `c[1] >= 4` — off-by-one threshold excludes level-4 cards from Door A
+3. `[1:4]` → `[:3]` — slice skips the highest-value card, Door B uses 2nd–4th instead of top 3
 
 ---
 
@@ -87,21 +86,28 @@ Tool outputs hex string `12D522631416` — split into 3 × 4-char groups and con
 | Field | Answer |
 |-------|--------|
 | Vault deleted at lockdown moment | `3847` |
-| Largest-reversal vault emergency code | `7741` |
+| Largest-reversal vault emergency code | `3391` |
 | Emergency-unlock-at-lockdown vault code | `9163` |
+
+**Traps:**
+- Q1: V007 deleted night before (routine archive), V010 deleted at 09:14:23 (one second late) — only V006 matches 09:14:22
+- Q2: V001 has the largest overall transaction (500k COMPLETED) but only the 4th-largest REVERSED — naive ORDER BY gives V001 (wrong); filter by REVERSED gives V005 (correct)
+- Q3: Multiple access_log entries at 09:14:22 (alice/dave VIEW_BALANCE are noise); WHISKERS EMERGENCY_UNLOCK is at 09:14:19 (3s early) — only MITTENS at 09:14:22 is correct
 
 **Queries:**
 ```sql
--- Q1: vault deleted at the lockdown timestamp (V007 was archived the night before — red herring)
+-- Q1: vault deleted at the lockdown timestamp
 SELECT emergency_code FROM vaults WHERE deleted_at = '2024-03-12 09:14:22';
 
--- Q2: vault with largest single REVERSED transaction (not total sum)
+-- Q2: vault with largest single REVERSED transaction
+-- (naive ORDER BY without status filter returns V001 via 500k COMPLETED transaction — wrong)
 SELECT v.emergency_code
 FROM transactions t JOIN vaults v ON t.vault_id = v.id
 WHERE t.status = 'REVERSED'
 ORDER BY t.amount DESC LIMIT 1;
 
--- Q3: EMERGENCY_UNLOCK at exact lockdown timestamp (WHISKERS at 09:14:19 is red herring)
+-- Q3: EMERGENCY_UNLOCK at exact lockdown timestamp
+-- (WHISKERS at 09:14:19 is red herring; alice/dave VIEW_BALANCE at 09:14:22 are noise)
 SELECT v.emergency_code
 FROM access_log a JOIN vaults v ON a.vault_id = v.id
 WHERE a.timestamp = '2024-03-12 09:14:22' AND a.action = 'EMERGENCY_UNLOCK';
@@ -117,9 +123,9 @@ WHERE a.timestamp = '2024-03-12 09:14:22' AND a.action = 'EMERGENCY_UNLOCK';
 | Final code 3 | `DONE` |
 
 **Bugs to fix (3 total — not told to participants):**
-1. `# import hashlib` → `import hashlib` — uncomment (NameError on first run)
+1. `hashlib.md5` → `hashlib.sha256` in `_k()` — wrong hash algorithm produces wrong key (silent ACCESS DENIED)
 2. `_key[(i + 1) % len(_key)]` → `_key[i % len(_key)]` in `_x()` — off-by-one in XOR key index (silent wrong output)
-3. Remove `_p = _p.strip().lower()` — lowercases the passphrase, wrong SHA-256 hash (silent ACCESS DENIED)
+3. Remove `.lower()` from `_p = _p.strip().lower()` — lowercases the passphrase, wrong SHA-256 hash (silent ACCESS DENIED)
 
 `_v()` is a decoy function — never called, never relevant.
 
